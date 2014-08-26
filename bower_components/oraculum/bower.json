@@ -1,0 +1,54 @@
+{
+  "name": "Oraculum",
+  "version": "0.0.5",
+  "keywords": [
+    "mvc",
+    "list",
+    "table",
+    "memory",
+    "mixins",
+    "router",
+    "binding",
+    "chaplin",
+    "factory",
+    "history",
+    "lookout",
+    "backbone",
+    "backgrid",
+    "behaviors",
+    "factoryjs",
+    "pagination",
+    "application",
+    "composition"
+  ],
+  "description": "The Enterprise Javascript MVC Framework.",
+  "homepage": "https://github.com/lookout/oraculum",
+  "repository": "https://github.com/lookout/oraculum.git",
+  "bugs": {
+    "url": "https://github.com/lookout/oraculum/issues",
+    "email": "Steve (Egesté) Regester <egeste@lookout.com> (http://egeste.net/)"
+  },
+  "contributors": [
+    "Steve (Egesté) Regester <egeste@lookout.com> (http://egeste.net/)",
+    "Gabriel Hernandez <gabriel.hernandez@lookout.com> (http://about.me/gabrielhernandez/)"
+  ],
+  "dependencies": {
+    "factoryjs": "~1.0.0"
+  },
+  "devDependencies": {
+    "jquery": "~2.1.1",
+    "marked": "~0.3.2",
+    "requirejs": "~2.1.14",
+    "require-cs": "~0.5.0",
+    "highlightjs": "latest",
+    "requirejs-text": "~2.0.12",
+    "bootstrap-css": "latest",
+    "coffee-script": "latest",
+
+    "sinon": "~1.7",
+    "jasmine-sinon": "~0.3",
+    "jasmine-jquery": "1.5.8",
+    "jasmine-matchers": "uxebu/jasmine-matchers#33e09d6b98ce190d0dff000e16a90f85e72d920f",
+    "jasmine-matchers-util": "JamieMason/Jasmine-Matchers#bfdb8e3cc50b48468e719243e65f2cf6d11ab066"
+  }
+}
