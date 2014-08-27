@@ -47,7 +47,7 @@ requirejs.config({
     location: '../../../../oraculum/dist'
   }, {
     name: 'muTable',
-    location: '../../../../oraculum-muTable/dist'
+    location: '../../../../oraculum-mutable/dist'
   }, {
     name: 'fastTable',
     location: '../../../../../dist'

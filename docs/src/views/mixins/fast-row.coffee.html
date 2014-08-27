@@ -66,8 +66,11 @@
 
     <span class="nv">_getTemplate: </span><span class="nf">(column) -&gt;</span>
       <span class="nv">template = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;template&#39;</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;column.template is not defined&#39;</span> <span class="k">unless</span> <span class="nx">template</span><span class="o">?</span>
       <span class="nv">template = </span><span class="nx">template</span> <span class="p">{</span><span class="nx">@model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">template</span>
+
+      <span class="nv">value = </span><span class="nx">@model</span><span class="p">.</span><span class="nx">escape</span> <span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nx">template</span> <span class="o">or=</span> <span class="s">&quot;&lt;div&gt;</span><span class="si">#{</span><span class="nx">value</span><span class="si">}</span><span class="s">&lt;/div&gt;&quot;</span>
+
       <span class="nv">$template = </span><span class="nx">$</span><span class="p">(</span><span class="nx">template</span><span class="p">)</span>
       <span class="nx">$template</span><span class="p">.</span><span class="nx">data</span> <span class="p">{</span><span class="nx">@model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span>
 
