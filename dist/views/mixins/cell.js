@@ -6,7 +6,7 @@
         var attribute;
         attribute = this.data('column').get('attribute');
         this.addClass('cell');
-        this.addClass('cell-mixin');
+        this.addClass('cell-template-mixin');
         return this.addClass(("" + attribute + "-cell").replace(/[\.\s]/, '-'));
       }
     }, {

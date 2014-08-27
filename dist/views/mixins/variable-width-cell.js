@@ -3,15 +3,16 @@
     'use strict';
     return Oraculum.defineMixin('VariableWidth.CellTemplateMixin', {
       mixinitialize: function() {
-        var column;
-        this.addClass('variable-width-cell-mixin');
+        var column, updateWidth;
+        this.addClass('variable-width-cell-template-mixin');
         column = this.data('column');
-        this.listenTo(column, 'change:width', (function(_this) {
+        updateWidth = (function(_this) {
           return function() {
             return _this._updateWidth(column);
           };
-        })(this));
-        return this._updateWidth(column);
+        })(this);
+        this.listenTo(column, 'change:width', updateWidth);
+        return updateWidth();
       },
       _updateWidth: function(column) {
         var width;

@@ -1,1 +1,1 @@
-var tree={"files":["LICENSE.md","README.md"],"dirs":{"src":{"files":["libs.coffee","main.coffee"],"dirs":{"views":{"dirs":{"mixins":{"files":["cell.coffee","fast-row.coffee","hideable-cell.coffee","sortable-cell.coffee","variable-width-cell.coffee"]}}}}}}};
+var tree={"files":["LICENSE.md","README.md"],"dirs":{"src":{"files":["main.coffee"],"dirs":{"views":{"dirs":{"mixins":{"files":["cell.coffee","fast-row.coffee","hideable-cell.coffee","sortable-cell.coffee","variable-width-cell.coffee"]}}}}}}};

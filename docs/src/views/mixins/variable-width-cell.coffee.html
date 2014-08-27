@@ -46,11 +46,11 @@
   <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;VariableWidth.CellTemplateMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
 
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
-      <span class="nx">@addClass</span> <span class="s">&#39;variable-width-cell-mixin&#39;</span>
+      <span class="nx">@addClass</span> <span class="s">&#39;variable-width-cell-template-mixin&#39;</span>
       <span class="nv">column = </span><span class="nx">@data</span> <span class="s">&#39;column&#39;</span>
-      <span class="nx">@listenTo</span> <span class="nx">column</span><span class="p">,</span> <span class="s">&#39;change:width&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
-        <span class="nx">@_updateWidth</span> <span class="nx">column</span>
-      <span class="nx">@_updateWidth</span> <span class="nx">column</span>
+      <span class="nv">updateWidth = </span><span class="o">=&gt;</span> <span class="nx">@_updateWidth</span> <span class="nx">column</span>
+      <span class="nx">@listenTo</span> <span class="nx">column</span><span class="p">,</span> <span class="s">&#39;change:width&#39;</span><span class="p">,</span> <span class="nx">updateWidth</span>
+      <span class="nx">updateWidth</span><span class="p">()</span>
 
     <span class="nv">_updateWidth: </span><span class="nf">(column) -&gt;</span>
       <span class="k">return</span> <span class="k">unless</span> <span class="p">(</span><span class="nv">width = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;width&#39;</span><span class="p">)</span><span class="o">?</span>
