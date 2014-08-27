@@ -13,10 +13,10 @@ define [
       staticClasses: ['fast-row-mixin']
 
     mixinitialize: ->
-      debouncedRender = _.debounce (=> @render()), 100
+      debouncedRender = _.debounce => @render()
       @listenTo @model, 'all', debouncedRender
       @listenTo @collection, 'change', debouncedRender
-      @listenTo @collection, 'add remove reset sort', @render
+      @listenTo @collection, 'add remove reset sort', => @render()
 
     render: ->
       @$el.empty()

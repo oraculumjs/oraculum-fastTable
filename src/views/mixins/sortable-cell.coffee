@@ -6,7 +6,7 @@ define [
   Oraculum.defineMixin 'Sortable.CellTemplateMixin',
 
     mixinitialize: ->
-      @addClass 'sortable-cell-mixin'
+      @addClass 'sortable-cell-template-mixin'
       @_updateSortableClass()
       @_updateDirectionClass()
 

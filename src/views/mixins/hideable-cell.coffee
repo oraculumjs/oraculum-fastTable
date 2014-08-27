@@ -6,5 +6,5 @@ define [
   Oraculum.defineMixin 'Hideable.CellTemplateMixin',
 
     mixinitialize: ->
-      @addClass 'hideable-cell-mixin'
+      @addClass 'hideable-cell-template-mixin'
       @toggle not @data('column').get 'hidden'

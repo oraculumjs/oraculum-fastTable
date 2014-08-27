@@ -3,7 +3,7 @@
     'use strict';
     return Oraculum.defineMixin('Sortable.CellTemplateMixin', {
       mixinitialize: function() {
-        this.addClass('sortable-cell-mixin');
+        this.addClass('sortable-cell-template-mixin');
         this._updateSortableClass();
         return this._updateDirectionClass();
       },

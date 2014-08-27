@@ -9,14 +9,18 @@
       },
       mixinitialize: function() {
         var debouncedRender;
-        debouncedRender = _.debounce(((function(_this) {
+        debouncedRender = _.debounce((function(_this) {
           return function() {
             return _this.render();
           };
-        })(this)), 100);
+        })(this));
         this.listenTo(this.model, 'all', debouncedRender);
         this.listenTo(this.collection, 'change', debouncedRender);
-        return this.listenTo(this.collection, 'add remove reset sort', this.render);
+        return this.listenTo(this.collection, 'add remove reset sort', (function(_this) {
+          return function() {
+            return _this.render();
+          };
+        })(this));
       },
       render: function() {
         this.$el.empty();

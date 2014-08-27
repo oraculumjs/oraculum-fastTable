@@ -28,8 +28,7 @@
     "email": "Steve (Egesté) Regester <egeste@lookout.com> (http://egeste.net/)"
   },
   "dependencies": {
-    "oraculum": "latest",
-    "interact": "~1.0.20"
+    "oraculum": ">=0.0.5"
   },
   "devDependencies": {
     "jquery": "~2.1.1",

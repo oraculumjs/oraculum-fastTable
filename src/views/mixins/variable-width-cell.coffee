@@ -7,11 +7,11 @@ define [
   Oraculum.defineMixin 'VariableWidth.CellTemplateMixin', {
 
     mixinitialize: ->
-      @addClass 'variable-width-cell-mixin'
+      @addClass 'variable-width-cell-template-mixin'
       column = @data 'column'
-      @listenTo column, 'change:width', =>
-        @_updateWidth column
-      @_updateWidth column
+      updateWidth = => @_updateWidth column
+      @listenTo column, 'change:width', updateWidth
+      updateWidth()
 
     _updateWidth: (column) ->
       return unless (width = column.get 'width')?

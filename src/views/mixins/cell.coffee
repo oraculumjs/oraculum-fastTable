@@ -10,7 +10,7 @@ define [
     mixinitialize: ->
       attribute = @data('column').get 'attribute'
       @addClass 'cell'
-      @addClass 'cell-mixin'
+      @addClass 'cell-template-mixin'
       @addClass "#{attribute}-cell".replace /[\.\s]/, '-'
 
   }, mixins: [
