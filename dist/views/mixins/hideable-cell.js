@@ -3,8 +3,13 @@
     'use strict';
     return Oraculum.defineMixin('Hideable.CellTemplateMixin', {
       mixinitialize: function() {
+        var display, hidden;
         this.addClass('hideable-cell-template-mixin');
-        return this.toggle(!this.data('column').get('hidden'));
+        hidden = this.data('column').get('hidden');
+        display = Boolean(hidden) ? 'none' : '';
+        return this.css({
+          display: display
+        });
       }
     });
   });
