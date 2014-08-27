@@ -34,17 +34,16 @@
         return this;
       },
       _getTemplate: function(column) {
-        var $template, template, templateMixins;
+        var $template, template, templateMixins, value;
         template = column.get('template');
-        if (template == null) {
-          throw new TypeError('column.template is not defined');
-        }
         if (_.isFunction(template)) {
           template = template({
             model: this.model,
             column: column
           });
         }
+        value = this.model.escape(column.get('attribute'));
+        template || (template = "<div>" + value + "</div>");
         $template = $(template);
         $template.data({
           model: this.model,

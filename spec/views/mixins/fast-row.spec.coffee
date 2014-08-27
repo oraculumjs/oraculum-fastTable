@@ -87,9 +87,10 @@ define [
       it 'should return this', ->
         expect(testView.render()).toBe testView
 
-      it 'should throw if a column is missing a template', ->
+      it 'should render a default cell template if none is provided', ->
         collection.add {'attribute'}, silent: true
-        expect(-> testView.render()).toThrow()
+        testView.render()
+        expect(testView.el).toContainHtml '<div>attribute</div>'
 
       describe 'column template elements', ->
 

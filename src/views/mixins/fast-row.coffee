@@ -27,8 +27,11 @@ define [
 
     _getTemplate: (column) ->
       template = column.get 'template'
-      throw new TypeError 'column.template is not defined' unless template?
       template = template {@model, column} if _.isFunction template
+
+      value = @model.escape column.get 'attribute'
+      template or= "<div>#{value}</div>"
+
       $template = $(template)
       $template.data {@model, column}
 
