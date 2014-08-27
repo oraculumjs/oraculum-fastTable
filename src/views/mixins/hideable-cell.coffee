@@ -7,4 +7,6 @@ define [
 
     mixinitialize: ->
       @addClass 'hideable-cell-template-mixin'
-      @toggle not @data('column').get 'hidden'
+      hidden = @data('column').get 'hidden'
+      display = if Boolean hidden then 'none' else ''
+      @css {display}
