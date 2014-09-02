@@ -27,7 +27,8 @@ define [
   # Hides excluded items by default.
   toggleView = (view, included) ->
     view.$el.stop true, true
-    view.$el.css 'display', unless included then 'none' else ''
+    display = unless included then 'none' else ''
+    view.$el.css {display}
 
   Oraculum.defineMixin 'List.ViewMixin', {
 
