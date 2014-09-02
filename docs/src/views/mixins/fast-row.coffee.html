@@ -40,46 +40,59 @@
         <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
   <span class="s">&#39;oraculum&#39;</span>
   <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
   <span class="s">&#39;oraculum/views/mixins/static-classes&#39;</span>
+  <span class="s">&#39;oraculum/plugins/tabular/views/mixins/row&#39;</span>
 <span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
   <span class="s">&#39;use strict&#39;</span>
 
   <span class="nv">$ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;jQuery&#39;</span>
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+  <span class="nv">defaultTemplate = </span><span class="nf">({model, column}) -&gt;</span>
+    <span class="nv">attr = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+    <span class="nv">value = </span><span class="nx">model</span><span class="p">.</span><span class="nx">escape</span> <span class="nx">attr</span>
+    <span class="k">return</span> <span class="s">&quot;&lt;div&gt;</span><span class="si">#{</span><span class="nx">value</span><span class="si">}</span><span class="s">&lt;/div&gt;&quot;</span>
 
   <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;FastRow.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
 
     <span class="nv">mixinOptions:</span>
       <span class="nv">staticClasses: </span><span class="p">[</span><span class="s">&#39;fast-row-mixin&#39;</span><span class="p">]</span>
+      <span class="nv">list: </span><span class="p">{</span> <span class="nx">defaultTemplate</span> <span class="p">}</span>
 
-    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
-      <span class="nv">debouncedRender = </span><span class="nx">_</span><span class="p">.</span><span class="nx">debounce</span> <span class="o">=&gt;</span> <span class="nx">@render</span><span class="p">()</span>
-      <span class="nx">@listenTo</span> <span class="nx">@model</span><span class="p">,</span> <span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="nx">debouncedRender</span>
-      <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;change&#39;</span><span class="p">,</span> <span class="nx">debouncedRender</span>
-      <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;add remove reset sort&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@render</span><span class="p">()</span>
+    <span class="nv">mixconfig: </span><span class="nf">({list}, {defaultTemplate} = {}) -&gt;</span>
+      <span class="k">delete</span> <span class="nx">list</span><span class="p">.</span><span class="nx">modelView</span>
+      <span class="nv">list.defaultTemplate = </span><span class="nx">defaultTemplate</span> <span class="k">if</span> <span class="nx">defaultTemplate</span><span class="o">?</span>
 
-    <span class="nv">render: </span><span class="nf">-&gt;</span>
-      <span class="nx">@$el</span><span class="p">.</span><span class="nx">empty</span><span class="p">()</span>
-      <span class="nx">@collection</span><span class="p">.</span><span class="nx">each</span> <span class="nf">(column) =&gt;</span>
-        <span class="nv">$template = </span><span class="nx">@_getTemplate</span> <span class="nx">column</span>
-        <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span> <span class="nx">$template</span>
-      <span class="k">return</span> <span class="k">this</span>
+    <span class="nv">initModelView: </span><span class="nf">(column) -&gt;</span>
+      <span class="nv">model = </span><span class="nx">@model</span> <span class="o">or</span> <span class="nx">column</span>
 
-    <span class="nv">_getTemplate: </span><span class="nf">(column) -&gt;</span>
       <span class="nv">template = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;template&#39;</span>
-      <span class="nv">template = </span><span class="nx">template</span> <span class="p">{</span><span class="nx">@model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">template</span>
-
-      <span class="nv">value = </span><span class="nx">@model</span><span class="p">.</span><span class="nx">escape</span> <span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
-      <span class="nx">template</span> <span class="o">or=</span> <span class="s">&quot;&lt;div&gt;</span><span class="si">#{</span><span class="nx">value</span><span class="si">}</span><span class="s">&lt;/div&gt;&quot;</span>
-
+      <span class="nx">template</span> <span class="o">or=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">defaultTemplate</span>
+      <span class="nv">template = </span><span class="nx">template</span> <span class="p">{</span><span class="nx">model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">template</span>
       <span class="nv">$template = </span><span class="nx">$</span><span class="p">(</span><span class="nx">template</span><span class="p">)</span>
-      <span class="nx">$template</span><span class="p">.</span><span class="nx">data</span> <span class="p">{</span><span class="nx">@model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span>
 
-      <span class="k">if</span> <span class="nv">templateMixins = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;templateMixins&#39;</span>
-        <span class="nx">@__factory</span><span class="p">().</span><span class="nx">handleMixins</span> <span class="nx">$template</span><span class="p">,</span> <span class="nx">templateMixins</span><span class="p">,</span> <span class="p">{</span><span class="nx">@model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span>
+      <span class="nv">view = </span><span class="p">{</span>
+        <span class="nx">model</span><span class="p">,</span> <span class="nx">column</span><span class="p">,</span>
+        <span class="nv">el: </span><span class="nx">$template</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nv">$el: </span><span class="nx">$template</span>
+        <span class="nv">render: </span><span class="nf">-&gt;</span> <span class="nx">view</span>
+      <span class="p">}</span>
 
-      <span class="k">return</span> <span class="nx">$template</span>
+      <span class="nv">viewOptions = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">viewOptions</span>
+      <span class="nv">viewOptions = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span><span class="nx">model</span><span class="p">,</span> <span class="nx">column</span><span class="p">},</span> <span class="nx">viewOptions</span>
 
-  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span><span class="s">&#39;StaticClasses.ViewMixin&#39;</span><span class="p">]</span>
+      <span class="nv">templateMixins = </span><span class="nx">_</span><span class="p">.</span><span class="nx">chain</span><span class="p">([</span><span class="s">&#39;Evented.Mixin&#39;</span><span class="p">])</span>
+        <span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;templateMixins&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">compact</span><span class="p">().</span><span class="nx">uniq</span><span class="p">().</span><span class="nx">value</span><span class="p">()</span>
+      <span class="nx">@__factory</span><span class="p">().</span><span class="nx">handleMixins</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">templateMixins</span><span class="p">,</span> <span class="p">[</span><span class="nx">viewOptions</span><span class="p">]</span>
+
+      <span class="k">return</span> <span class="nx">view</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;List.ViewMixin&#39;</span>
+    <span class="s">&#39;StaticClasses.ViewMixin&#39;</span>
+  <span class="p">]</span>
 </pre></div>
         </td>
       </tr>

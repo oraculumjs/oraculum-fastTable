@@ -1,43 +1,56 @@
 define [
   'oraculum'
   'oraculum/libs'
+  'oraculum/mixins/evented'
   'oraculum/views/mixins/static-classes'
+  'oraculum/plugins/tabular/views/mixins/row'
 ], (Oraculum) ->
   'use strict'
 
   $ = Oraculum.get 'jQuery'
+  _ = Oraculum.get 'underscore'
+
+  defaultTemplate = ({model, column}) ->
+    attr = column.get 'attribute'
+    value = model.escape attr
+    return "<div>#{value}</div>"
 
   Oraculum.defineMixin 'FastRow.ViewMixin', {
 
     mixinOptions:
       staticClasses: ['fast-row-mixin']
+      list: { defaultTemplate }
 
-    mixinitialize: ->
-      debouncedRender = _.debounce => @render()
-      @listenTo @model, 'all', debouncedRender
-      @listenTo @collection, 'change', debouncedRender
-      @listenTo @collection, 'add remove reset sort', => @render()
+    mixconfig: ({list}, {defaultTemplate} = {}) ->
+      delete list.modelView
+      list.defaultTemplate = defaultTemplate if defaultTemplate?
 
-    render: ->
-      @$el.empty()
-      @collection.each (column) =>
-        $template = @_getTemplate column
-        @$el.append $template
-      return this
+    initModelView: (column) ->
+      model = @model or column
 
-    _getTemplate: (column) ->
       template = column.get 'template'
-      template = template {@model, column} if _.isFunction template
-
-      value = @model.escape column.get 'attribute'
-      template or= "<div>#{value}</div>"
-
+      template or= @mixinOptions.list.defaultTemplate
+      template = template {model, column} if _.isFunction template
       $template = $(template)
-      $template.data {@model, column}
 
-      if templateMixins = column.get 'templateMixins'
-        @__factory().handleMixins $template, templateMixins, {@model, column}
+      view = {
+        model, column,
+        el: $template[0]
+        $el: $template
+        render: -> view
+      }
 
-      return $template
+      viewOptions = @mixinOptions.list.viewOptions
+      viewOptions = _.extend {model, column}, viewOptions
 
-  }, mixins: ['StaticClasses.ViewMixin']
+      templateMixins = _.chain(['Evented.Mixin'])
+        .union(column.get 'templateMixins')
+        .compact().uniq().value()
+      @__factory().handleMixins view, templateMixins, [viewOptions]
+
+      return view
+
+  }, mixins: [
+    'List.ViewMixin'
+    'StaticClasses.ViewMixin'
+  ]

@@ -1,64 +1,64 @@
 (function() {
-  define(['oraculum', 'oraculum/libs', 'oraculum/views/mixins/static-classes'], function(Oraculum) {
+  define(['oraculum', 'oraculum/libs', 'oraculum/mixins/evented', 'oraculum/views/mixins/static-classes', 'oraculum/plugins/tabular/views/mixins/row'], function(Oraculum) {
     'use strict';
-    var $;
+    var $, defaultTemplate, _;
     $ = Oraculum.get('jQuery');
+    _ = Oraculum.get('underscore');
+    defaultTemplate = function(_arg) {
+      var attr, column, model, value;
+      model = _arg.model, column = _arg.column;
+      attr = column.get('attribute');
+      value = model.escape(attr);
+      return "<div>" + value + "</div>";
+    };
     return Oraculum.defineMixin('FastRow.ViewMixin', {
       mixinOptions: {
-        staticClasses: ['fast-row-mixin']
+        staticClasses: ['fast-row-mixin'],
+        list: {
+          defaultTemplate: defaultTemplate
+        }
       },
-      mixinitialize: function() {
-        var debouncedRender;
-        debouncedRender = _.debounce((function(_this) {
-          return function() {
-            return _this.render();
-          };
-        })(this));
-        this.listenTo(this.model, 'all', debouncedRender);
-        this.listenTo(this.collection, 'change', debouncedRender);
-        return this.listenTo(this.collection, 'add remove reset sort', (function(_this) {
-          return function() {
-            return _this.render();
-          };
-        })(this));
+      mixconfig: function(_arg, _arg1) {
+        var defaultTemplate, list;
+        list = _arg.list;
+        defaultTemplate = (_arg1 != null ? _arg1 : {}).defaultTemplate;
+        delete list.modelView;
+        if (defaultTemplate != null) {
+          return list.defaultTemplate = defaultTemplate;
+        }
       },
-      render: function() {
-        this.$el.empty();
-        this.collection.each((function(_this) {
-          return function(column) {
-            var $template;
-            $template = _this._getTemplate(column);
-            return _this.$el.append($template);
-          };
-        })(this));
-        return this;
-      },
-      _getTemplate: function(column) {
-        var $template, template, templateMixins, value;
+      initModelView: function(column) {
+        var $template, model, template, templateMixins, view, viewOptions;
+        model = this.model || column;
         template = column.get('template');
+        template || (template = this.mixinOptions.list.defaultTemplate);
         if (_.isFunction(template)) {
           template = template({
-            model: this.model,
+            model: model,
             column: column
           });
         }
-        value = this.model.escape(column.get('attribute'));
-        template || (template = "<div>" + value + "</div>");
         $template = $(template);
-        $template.data({
-          model: this.model,
+        view = {
+          model: model,
+          column: column,
+          el: $template[0],
+          $el: $template,
+          render: function() {
+            return view;
+          }
+        };
+        viewOptions = this.mixinOptions.list.viewOptions;
+        viewOptions = _.extend({
+          model: model,
           column: column
-        });
-        if (templateMixins = column.get('templateMixins')) {
-          this.__factory().handleMixins($template, templateMixins, {
-            model: this.model,
-            column: column
-          });
-        }
-        return $template;
+        }, viewOptions);
+        templateMixins = _.chain(['Evented.Mixin']).union(column.get('templateMixins')).compact().uniq().value();
+        this.__factory().handleMixins(view, templateMixins, [viewOptions]);
+        return view;
       }
     }, {
-      mixins: ['StaticClasses.ViewMixin']
+      mixins: ['List.ViewMixin', 'StaticClasses.ViewMixin']
     });
   });
 

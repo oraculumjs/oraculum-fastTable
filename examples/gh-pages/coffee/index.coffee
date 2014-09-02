@@ -5,15 +5,15 @@ define [
 
   'cs!ft/examples/gh-pages/coffee/templates/home'
 
-  'fastTable/views/mixins/cell'
-  'fastTable/views/mixins/variable-width-cell'
-
   'cs!libs'
   'cs!models/pages'
-  'cs!ft/examples/gh-pages/coffee/models/column'
-  'cs!ft/examples/gh-pages/coffee/models/github-event'
-  'cs!ft/examples/gh-pages/coffee/views/github-event-table'
+  'fastTable/views/mixins/fast-row'
+  'oraculum/views/mixins/html-templating'
+  'oraculum/plugins/tabular/views/mixins/cell'
+  'oraculum/plugins/tabular/views/mixins/table'
+  'oraculum/plugins/tabular/views/mixins/variable-width-cell'
 ], (Oraculum, home) ->
+  'use strict'
 
   pages = Oraculum.get 'Pages.Collection'
   pages.__dispose()
@@ -24,53 +24,68 @@ define [
     markdown: home
   }], parse: true
 
-  makeEventedMethod = Oraculum.get 'makeEventedMethod'
+  Oraculum.extend 'View', 'FastRow.View', {
+    tagName: 'tr'
+  }, mixins: ['FastRow.ViewMixin']
+
+  Oraculum.extend 'View', 'Table.View', {
+    tagName: 'table'
+    className: 'table table-bordered table-hover table-striped'
+    mixinOptions:
+      list:
+        modelView: 'FastRow.View'
+        listSelector: 'tbody'
+      template: '<tbody/>'
+  }, {
+    singleton: true
+    mixins: [
+      'Table.ViewMixin'
+      'Attach.ViewMixin'
+      'HTMLTemplating.ViewMixin'
+      'AutoRender.ViewMixin'
+    ]
+  }
 
   Oraculum.onTag 'Index.Controller', (controller) ->
+
+    makeEventedMethod = Oraculum.get 'makeEventedMethod'
     makeEventedMethod controller, 'index'
 
     controller.on 'index:after', ({page}) ->
 
-      collection = Oraculum.get 'GithubEvent.Collection', [{
-        'id', 'type',
-        repo: {'name'}
-        actor: {'login'}
-      }]
+      collection = Oraculum.get 'Collection', _.map [0..200], (id) -> {
+        id: id
+        type: "type-#{id}"
+        repo: "repo-#{id}"
+        actor: "user-#{id}"
+      }
 
-      columns = Oraculum.get 'Columns', [{
+      columns = Oraculum.get 'Collection', [{
         label: 'Unique Identifier'
-        sortable: true
         attribute: 'id'
-        template: ({column, model}) ->
-          return "<td><span>#{model.get('id')}</span></td>"
-        templateMixins: ['Cell.TemplateMixin', 'VariableWidth.CellTemplateMixin']
+        template: ({column, model}) -> "<td>#{model.get 'id'}</td>"
+        templateMixins: ['Cell.ViewMixin', 'VariableWidth.CellMixin']
       }, {
         label: 'Actor'
-        sortable: true
-        attribute: 'actor.login'
-        template: ({column, model}) ->
-          return "<td><span>#{model.get('actor').login}</span></td>"
-        templateMixins: ['Cell.TemplateMixin', 'VariableWidth.CellTemplateMixin']
+        attribute: 'actor'
+        template: ({column, model}) -> "<td>#{model.get 'actor'}</td>"
+        templateMixins: ['Cell.ViewMixin', 'VariableWidth.CellMixin']
       }, {
         label: 'Event Type'
-        sortable: true
         attribute: 'type'
-        template: ({column, model}) ->
-          return "<td><span>#{model.get('type')}</span></td>"
-        templateMixins: ['Cell.TemplateMixin', 'VariableWidth.CellTemplateMixin']
+        template: ({column, model}) -> "<td>#{model.get 'type'}</td>"
+        templateMixins: ['Cell.ViewMixin', 'VariableWidth.CellMixin']
       }, {
         label: 'Repo Name'
-        sortable: true
-        attribute: 'repo.name'
-        template: ({column, model}) ->
-          return "<td><span>#{model.get('repo').name}</span></td>"
-        templateMixins: ['Cell.TemplateMixin', 'VariableWidth.CellTemplateMixin']
+        attribute: 'repo'
+        template: ({column, model}) -> "<td>#{model.get 'repo'}</td>"
+        templateMixins: ['Cell.ViewMixin', 'VariableWidth.CellMixin']
       }], sortCollection: collection
 
-      controller.reuse 'table-demo', 'GithubEvents.Table',
+      controller.reuse 'table-demo', 'Table.View',
+        columns: columns
         container: '#fastTable-demo'
         collection: collection
-        columns: columns
 
   # Bootstrap the app
   require ['cs!index']

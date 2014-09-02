@@ -1,6 +1,6 @@
 {
   "name": "Oraculum-fastTable",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "keywords": [
     "list",
     "sort",
@@ -39,7 +39,6 @@
     "requirejs-text": "~2.0.12",
     "bootstrap-css": "latest",
     "coffee-script": "latest",
-    "oraculum-mutable": ">=0.0.3",
 
     "sinon": "~1.7",
     "jasmine-sinon": "~0.3",
