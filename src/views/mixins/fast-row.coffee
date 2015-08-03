@@ -18,7 +18,6 @@ define [
   Oraculum.defineMixin 'FastRow.ViewMixin', {
 
     mixinOptions:
-      staticClasses: ['fast-row-mixin']
       list: { defaultTemplate }
 
     mixconfig: ({list}, {defaultTemplate} = {}) ->
@@ -34,23 +33,26 @@ define [
       $template = $(template)
 
       view = {
+        # Cell.ViewMixin interface
         model, column,
+        # Minimal Backbone.View interface
         el: $template[0]
         $el: $template
-        render: -> view
+        render: -> this
       }
 
-      viewOptions = @mixinOptions.list.viewOptions
-      viewOptions = _.extend {model, column}, viewOptions
+      factory = @__factory()
+      options = @mixinOptions.list.viewOptions
+      options = factory.composeConfig options, {model, column}
+      options = options.call this, {model, column} if _.isFunction options
 
       templateMixins = _.chain(['Evented.Mixin'])
-        .union(column.get 'templateMixins')
-        .compact().uniq().value()
-      @__factory().handleMixins view, templateMixins, [viewOptions]
+        .union(column.get 'templateMixins').compact().uniq().value()
+
+      mixins = factory.composeMixinDependencies templateMixins
+      factory.enhanceObject factory, 'Oraculum-fastTable.Template', {mixins}, view
+      factory.handleMixins view, mixins, [options]
 
       return view
 
-  }, mixins: [
-    'List.ViewMixin'
-    'StaticClasses.ViewMixin'
-  ]
+  }, mixins: ['List.ViewMixin']

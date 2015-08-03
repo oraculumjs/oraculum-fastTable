@@ -1,34 +1,33 @@
 (function() {
   define(['oraculum', 'oraculum/libs', 'oraculum/mixins/evented', 'oraculum/views/mixins/static-classes', 'oraculum/plugins/tabular/views/mixins/row'], function(Oraculum) {
     'use strict';
-    var $, defaultTemplate, _;
+    var $, _, defaultTemplate;
     $ = Oraculum.get('jQuery');
     _ = Oraculum.get('underscore');
-    defaultTemplate = function(_arg) {
+    defaultTemplate = function(arg) {
       var attr, column, model, value;
-      model = _arg.model, column = _arg.column;
+      model = arg.model, column = arg.column;
       attr = column.get('attribute');
       value = model.escape(attr);
       return "<div>" + value + "</div>";
     };
     return Oraculum.defineMixin('FastRow.ViewMixin', {
       mixinOptions: {
-        staticClasses: ['fast-row-mixin'],
         list: {
           defaultTemplate: defaultTemplate
         }
       },
-      mixconfig: function(_arg, _arg1) {
+      mixconfig: function(arg, arg1) {
         var defaultTemplate, list;
-        list = _arg.list;
-        defaultTemplate = (_arg1 != null ? _arg1 : {}).defaultTemplate;
+        list = arg.list;
+        defaultTemplate = (arg1 != null ? arg1 : {}).defaultTemplate;
         delete list.modelView;
         if (defaultTemplate != null) {
           return list.defaultTemplate = defaultTemplate;
         }
       },
       initModelView: function(column) {
-        var $template, model, template, templateMixins, view, viewOptions;
+        var $template, factory, mixins, model, options, template, templateMixins, view;
         model = this.model || column;
         template = column.get('template');
         template || (template = this.mixinOptions.list.defaultTemplate);
@@ -45,20 +44,31 @@
           el: $template[0],
           $el: $template,
           render: function() {
-            return view;
+            return this;
           }
         };
-        viewOptions = this.mixinOptions.list.viewOptions;
-        viewOptions = _.extend({
+        factory = this.__factory();
+        options = this.mixinOptions.list.viewOptions;
+        options = factory.composeConfig(options, {
           model: model,
           column: column
-        }, viewOptions);
+        });
+        if (_.isFunction(options)) {
+          options = options.call(this, {
+            model: model,
+            column: column
+          });
+        }
         templateMixins = _.chain(['Evented.Mixin']).union(column.get('templateMixins')).compact().uniq().value();
-        this.__factory().handleMixins(view, templateMixins, [viewOptions]);
+        mixins = factory.composeMixinDependencies(templateMixins);
+        factory.enhanceObject(factory, 'Oraculum-fastTable.Template', {
+          mixins: mixins
+        }, view);
+        factory.handleMixins(view, mixins, [options]);
         return view;
       }
     }, {
-      mixins: ['List.ViewMixin', 'StaticClasses.ViewMixin']
+      mixins: ['List.ViewMixin']
     });
   });
 

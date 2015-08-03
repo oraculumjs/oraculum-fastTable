@@ -46,14 +46,8 @@ define [
     afterEach ->
       testView.dispose()
 
-    it 'should throw if constructed without a collection', ->
-      expect(-> Oraculum.get 'FastRow.Test.View').toThrow()
-
-    describe 'mixin configuration', ->
-      mixinSettings = Oraculum.mixinSettings['FastRow.ViewMixin']
-
-      it 'should depend on List.ViewMixin', ->
-        expect(mixinSettings.mixins).toContain 'List.ViewMixin'
+    it 'should use List.ViewMixin', ->
+      expect(testView).toUseMixin 'List.ViewMixin'
 
     describe 'construction', ->
 
