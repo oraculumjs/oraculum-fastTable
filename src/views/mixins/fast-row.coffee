@@ -15,6 +15,9 @@ define [
     value = model.escape attr
     return "<div>#{value}</div>"
 
+  Oraculum.define 'Oraculum-fastTable.Template', (-> defaultTemplate),
+    singleton: true
+
   Oraculum.defineMixin 'FastRow.ViewMixin', {
 
     mixinOptions:
@@ -34,7 +37,7 @@ define [
 
       view = {
         # Cell.ViewMixin interface
-        model, column,
+        model, column
         # Minimal Backbone.View interface
         el: $template[0]
         $el: $template
@@ -46,8 +49,10 @@ define [
       options = factory.composeConfig options, {model, column}
       options = options.call this, {model, column} if _.isFunction options
 
+      # Automagically add Evented.Mixin
       templateMixins = _.chain(['Evented.Mixin'])
-        .union(column.get 'templateMixins').compact().uniq().value()
+        .union(column.get 'templateMixins')
+        .compact().uniq().value()
 
       mixins = factory.composeMixinDependencies templateMixins
       factory.enhanceObject factory, 'Oraculum-fastTable.Template', {mixins}, view

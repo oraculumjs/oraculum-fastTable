@@ -54,6 +54,9 @@
     <span class="nv">value = </span><span class="nx">model</span><span class="p">.</span><span class="nx">escape</span> <span class="nx">attr</span>
     <span class="k">return</span> <span class="s">&quot;&lt;div&gt;</span><span class="si">#{</span><span class="nx">value</span><span class="si">}</span><span class="s">&lt;/div&gt;&quot;</span>
 
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Oraculum-fastTable.Template&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">defaultTemplate</span><span class="p">),</span>
+    <span class="nv">singleton: </span><span class="kc">true</span>
+
   <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;FastRow.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
 
     <span class="nv">mixinOptions:</span>
@@ -84,7 +87,7 @@
 <p>Cell.ViewMixin interface</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-        <span class="nx">model</span><span class="p">,</span> <span class="nx">column</span><span class="p">,</span>
+        <span class="nx">model</span><span class="p">,</span> <span class="nx">column</span>
 
 </pre></div>
         </td>
@@ -107,8 +110,21 @@
       <span class="nv">options = </span><span class="nx">factory</span><span class="p">.</span><span class="nx">composeConfig</span> <span class="nx">options</span><span class="p">,</span> <span class="p">{</span><span class="nx">model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span>
       <span class="nv">options = </span><span class="nx">options</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span><span class="nx">model</span><span class="p">,</span> <span class="nx">column</span><span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">options</span>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Automagically add Evented.Mixin</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
       <span class="nv">templateMixins = </span><span class="nx">_</span><span class="p">.</span><span class="nx">chain</span><span class="p">([</span><span class="s">&#39;Evented.Mixin&#39;</span><span class="p">])</span>
-        <span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;templateMixins&#39;</span><span class="p">).</span><span class="nx">compact</span><span class="p">().</span><span class="nx">uniq</span><span class="p">().</span><span class="nx">value</span><span class="p">()</span>
+        <span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;templateMixins&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">compact</span><span class="p">().</span><span class="nx">uniq</span><span class="p">().</span><span class="nx">value</span><span class="p">()</span>
 
       <span class="nv">mixins = </span><span class="nx">factory</span><span class="p">.</span><span class="nx">composeMixinDependencies</span> <span class="nx">templateMixins</span>
       <span class="nx">factory</span><span class="p">.</span><span class="nx">enhanceObject</span> <span class="nx">factory</span><span class="p">,</span> <span class="s">&#39;Oraculum-fastTable.Template&#39;</span><span class="p">,</span> <span class="p">{</span><span class="nx">mixins</span><span class="p">},</span> <span class="nx">view</span>

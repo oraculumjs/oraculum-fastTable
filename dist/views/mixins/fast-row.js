@@ -11,6 +11,11 @@
       value = model.escape(attr);
       return "<div>" + value + "</div>";
     };
+    Oraculum.define('Oraculum-fastTable.Template', (function() {
+      return defaultTemplate;
+    }), {
+      singleton: true
+    });
     return Oraculum.defineMixin('FastRow.ViewMixin', {
       mixinOptions: {
         list: {
